@@ -1,0 +1,96 @@
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+const { isAdmin } = require('../middleware/auth');
+
+router.get('/admin', isAdmin, (req, res) => {
+  res.sendFile('admin.html', { root: 'public' });
+});
+
+router.get('/admin/users', isAdmin, async (req, res) => {
+  try {
+    const users = await User.find({ role: 'user' }).populate('iframes').select('-password').sort({ createdAt: -1 });
+    return res.json(users);
+  } catch (err) {
+    console.error('Error al obtener usuarios:', err);
+    return res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+});
+
+router.post('/admin/users', isAdmin, async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Usuario y contraseña son obligatorios' });
+    }
+
+    const existing = await User.findOne({ username });
+    if (existing) {
+      return res.status(409).json({ error: 'El nombre de usuario ya existe' });
+    }
+
+    const user = new User({ username, password, role: 'user', iframes: [] });
+    await user.save();
+
+    return res.status(201).json({
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+      iframes: [],
+      createdAt: user.createdAt
+    });
+  } catch (err) {
+    console.error('Error al crear usuario:', err);
+    return res.status(500).json({ error: 'Error al crear usuario' });
+  }
+});
+
+router.put('/admin/users/:id', isAdmin, async (req, res) => {
+  try {
+    const { username, iframes } = req.body;
+    const update = {};
+
+    if (username !== undefined) {
+      const existing = await User.findOne({ username, _id: { $ne: req.params.id } });
+      if (existing) {
+        return res.status(409).json({ error: 'El nombre de usuario ya existe' });
+      }
+      update.username = username;
+    }
+
+    if (iframes !== undefined) {
+      update.iframes = iframes;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      update,
+      { new: true, runValidators: true }
+    ).populate('iframes').select('-password');
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    return res.json(user);
+  } catch (err) {
+    console.error('Error al actualizar usuario:', err);
+    return res.status(500).json({ error: 'Error al actualizar usuario' });
+  }
+});
+
+router.delete('/admin/users/:id', isAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    return res.json({ success: true, message: 'Usuario eliminado' });
+  } catch (err) {
+    console.error('Error al eliminar usuario:', err);
+    return res.status(500).json({ error: 'Error al eliminar usuario' });
+  }
+});
+
+module.exports = router;
