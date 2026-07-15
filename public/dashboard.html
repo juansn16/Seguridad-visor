@@ -12,25 +12,36 @@
   <nav class="navbar navbar-dark bg-dark navbar-shrink">
     <div class="container-fluid">
       <span class="navbar-brand fw-bold">INEVIEWER</span>
-      <div class="d-flex align-items-center">
-        <span class="text-light me-3 small" id="userLabel">Cargando...</span>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-light btn-sm d-none" id="btnBack">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Volver
+        </button>
+        <span class="text-light small" id="userLabel">Cargando...</span>
         <a href="/logout" class="btn btn-outline-light btn-sm">Cerrar sesion</a>
       </div>
     </div>
   </nav>
 
-  <div id="iframeTabs" class="d-none">
-    <ul class="nav nav-tabs px-3 pt-2 bg-white" id="tabsContainer" role="tablist"></ul>
+  <div id="defaultMessage" class="d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="text-center">
+      <h4 class="text-muted">No hay contenido asignado</h4>
+      <p class="text-muted">Contacta al administrador para que te asigne un iframe.</p>
+    </div>
   </div>
 
-  <div class="flex-grow-1 position-relative">
-    <div id="defaultMessage" class="d-flex justify-content-center align-items-center h-100">
-      <div class="text-center">
-        <h4 class="text-muted">No hay contenido asignado</h4>
-        <p class="text-muted">Contacta al administrador para que te asigne un iframe.</p>
+  <div id="selectionView" class="d-none flex-grow-1 overflow-auto">
+    <div class="container py-4">
+      <div class="text-center mb-4">
+        <h4 class="fw-bold text-dark">Selecciona un visor</h4>
+        <p class="text-muted">Elige el iframe que deseas visualizar</p>
       </div>
+      <div id="iframeGrid" class="row g-4 justify-content-center"></div>
     </div>
-    <div id="iframePanels" class="d-none h-100"></div>
+  </div>
+
+  <div id="viewerView" class="d-none flex-grow-1">
+    <div id="viewerFrame" class="w-100 h-100"></div>
   </div>
 
   <script src="/js/dashboard.js"></script>
