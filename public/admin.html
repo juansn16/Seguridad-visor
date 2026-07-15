@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Seguridad Visor</title>
+  <title>Admin - INEVIEWER</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -11,8 +11,11 @@
 
   <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-      <span class="navbar-brand fw-bold">Seguridad Visor - Admin</span>
-      <a href="/logout" class="btn btn-outline-light btn-sm">Cerrar sesion</a>
+      <span class="navbar-brand fw-bold">INEVIEWER - Admin</span>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-warning btn-sm" onclick="openAdminSettings()">Configuracion</button>
+        <a href="/logout" class="btn btn-outline-light btn-sm">Cerrar sesion</a>
+      </div>
     </div>
   </nav>
 
@@ -95,7 +98,13 @@
                   </div>
                   <div class="mb-3">
                     <label for="newPassword" class="form-label">Contrasena</label>
-                    <input type="password" class="form-control" id="newPassword" required minlength="6">
+                    <div class="input-group">
+                      <input type="password" class="form-control" id="newPassword" required minlength="6">
+                      <button class="btn btn-outline-secondary toggle-password" type="button" data-target="newPassword">
+                        <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-icon d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      </button>
+                    </div>
                   </div>
                   <button type="submit" class="btn btn-primary w-100">Crear Usuario</button>
                 </form>
@@ -145,6 +154,26 @@
           <div class="mb-3">
             <label for="editUsername" class="form-label">Usuario</label>
             <input type="text" class="form-control" id="editUsername">
+          </div>
+          <div class="mb-3" id="editPasswordField" style="display:none;">
+            <label for="editPassword" class="form-label">Nueva Contrasena</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="editPassword" placeholder="Dejar vacio para no cambiar">
+              <button class="btn btn-outline-secondary toggle-password" type="button" data-target="editPassword">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-icon d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3" id="editPinField" style="display:none;">
+            <label for="editPin" class="form-label">PIN de Verificacion</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="editPin" placeholder="Ingresa el PIN para cambiar contraseña">
+              <button class="btn btn-outline-secondary toggle-password" type="button" data-target="editPin">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-icon d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Asignar Iframes</label>
@@ -208,7 +237,60 @@
     </div>
   </div>
 
+  <div class="modal fade" id="adminSettingsModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Configuracion del Admin</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="adminSettingsAlert" class="alert d-none" role="alert"></div>
+          <div class="mb-3">
+            <label for="adminUsername" class="form-label">Usuario</label>
+            <input type="text" class="form-control" id="adminUsername">
+          </div>
+          <div class="mb-3">
+            <label for="adminNewPassword" class="form-label">Nueva Contrasena</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="adminNewPassword" placeholder="Dejar vacio para no cambiar">
+              <button class="btn btn-outline-secondary toggle-password" type="button" data-target="adminNewPassword">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-icon d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="adminConfirmPassword" class="form-label">Confirmar Contrasena</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="adminConfirmPassword" placeholder="Repite la nueva contraseña">
+              <button class="btn btn-outline-secondary toggle-password" type="button" data-target="adminConfirmPassword">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-icon d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="adminCurrentPassword" class="form-label">Contraseña Actual</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="adminCurrentPassword" required placeholder="Requerido para guardar">
+              <button class="btn btn-outline-secondary toggle-password" type="button" data-target="adminCurrentPassword">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-icon d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-warning" id="btnSaveAdminProfile">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/admin.js"></script>
+  <script src="/js/toggle-password.js"></script>
 </body>
 </html>

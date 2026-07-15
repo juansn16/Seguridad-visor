@@ -1,12 +1,23 @@
 let allIframes = [];
-let editModal, deleteModal, editIframeModal;
+let editModal, deleteModal, editIframeModal, adminSettingsModal;
 
 document.addEventListener('DOMContentLoaded', () => {
   editModal = new bootstrap.Modal(document.getElementById('editModal'));
   deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
   editIframeModal = new bootstrap.Modal(document.getElementById('editIframeModal'));
+  adminSettingsModal = new bootstrap.Modal(document.getElementById('adminSettingsModal'));
   loadIframes();
   loadUsers();
+
+  document.getElementById('editPassword').addEventListener('input', (e) => {
+    const pinField = document.getElementById('editPinField');
+    if (e.target.value.trim().length > 0) {
+      pinField.style.display = 'block';
+    } else {
+      pinField.style.display = 'none';
+      document.getElementById('editPin').value = '';
+    }
+  });
 });
 
 document.getElementById('createIframeForm').addEventListener('submit', async (e) => {
@@ -164,6 +175,11 @@ function openEditUser(id, username, assignedIds) {
   document.getElementById('editUserId').value = id;
   document.getElementById('editUsername').value = username;
 
+  document.getElementById('editPassword').value = '';
+  document.getElementById('editPin').value = '';
+  document.getElementById('editPasswordField').style.display = 'none';
+  document.getElementById('editPinField').style.display = 'none';
+
   const container = document.getElementById('iframeCheckboxList');
   if (allIframes.length === 0) {
     container.innerHTML = '<span class="text-muted">No hay iframes disponibles. Crea uno primero.</span>';
@@ -182,15 +198,27 @@ function openEditUser(id, username, assignedIds) {
 document.getElementById('btnSaveUser').addEventListener('click', async () => {
   const id = document.getElementById('editUserId').value;
   const username = document.getElementById('editUsername').value.trim();
+  const password = document.getElementById('editPassword').value;
+  const pin = document.getElementById('editPin').value;
 
   const checkboxes = document.querySelectorAll('#iframeCheckboxList .form-check-input:checked');
   const iframes = Array.from(checkboxes).map(cb => cb.value);
+
+  const body = { username, iframes };
+  if (password.trim().length > 0) {
+    if (!pin) {
+      alert('Debes ingresar el PIN de verificacion para cambiar la contraseña');
+      return;
+    }
+    body.password = password;
+    body.pin = pin;
+  }
 
   try {
     const res = await fetch(`/admin/users/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, iframes })
+      body: JSON.stringify(body)
     });
     const data = await res.json();
     if (!res.ok) {
@@ -234,6 +262,70 @@ document.getElementById('btnConfirmDelete').addEventListener('click', async () =
   }
 });
 
+async function openAdminSettings() {
+  const alertEl = document.getElementById('adminSettingsAlert');
+  alertEl.className = 'alert d-none';
+  document.getElementById('adminNewPassword').value = '';
+  document.getElementById('adminConfirmPassword').value = '';
+  document.getElementById('adminCurrentPassword').value = '';
+
+  try {
+    const res = await fetch('/admin/me');
+    const data = await res.json();
+    document.getElementById('adminUsername').value = data.username || '';
+  } catch {
+    document.getElementById('adminUsername').value = '';
+  }
+
+  adminSettingsModal.show();
+}
+
+document.getElementById('btnSaveAdminProfile').addEventListener('click', async () => {
+  const alertEl = document.getElementById('adminSettingsAlert');
+  const username = document.getElementById('adminUsername').value.trim();
+  const newPassword = document.getElementById('adminNewPassword').value;
+  const confirmPassword = document.getElementById('adminConfirmPassword').value;
+  const currentPassword = document.getElementById('adminCurrentPassword').value;
+
+  if (!currentPassword) {
+    showAdminAlert('Debes ingresar tu contraseña actual para guardar', 'danger');
+    return;
+  }
+
+  if (newPassword || confirmPassword) {
+    if (newPassword !== confirmPassword) {
+      showAdminAlert('Las contrasenas nuevas no coinciden', 'danger');
+      return;
+    }
+    if (newPassword.length < 6) {
+      showAdminAlert('La nueva contraseña debe tener al menos 6 caracteres', 'danger');
+      return;
+    }
+  }
+
+  try {
+    const res = await fetch('/admin/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, newPassword, currentPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showAdminAlert(data.error || 'Error al actualizar', 'danger');
+      return;
+    }
+    showAdminAlert('Perfil actualizado correctamente', 'success');
+    setTimeout(() => {
+      adminSettingsModal.hide();
+      if (data.username) {
+        document.querySelector('.navbar-brand').textContent = `INEVIEWER - ${data.username}`;
+      }
+    }, 1000);
+  } catch {
+    showAdminAlert('Error de conexion', 'danger');
+  }
+});
+
 function showIframeAlert(message, type) {
   const el = document.getElementById('iframeAlert');
   el.textContent = message;
@@ -242,6 +334,12 @@ function showIframeAlert(message, type) {
 
 function showCreateAlert(message, type) {
   const el = document.getElementById('createAlert');
+  el.textContent = message;
+  el.className = `alert alert-${type}`;
+}
+
+function showAdminAlert(message, type) {
+  const el = document.getElementById('adminSettingsAlert');
   el.textContent = message;
   el.className = `alert alert-${type}`;
 }
